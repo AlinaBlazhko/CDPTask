@@ -10,35 +10,23 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.WebDriverSingleton;
 
+import java.util.List;
+
 public class AbstractPage {
-    private static final int WAIT_FOR_ELEMENT_TIMEOUT_SECONDS = 10;
-    WebDriver driver;
+
+    protected WebDriver driver;
 
     public AbstractPage() {
         this.driver = WebDriverSingleton.getWebDriverInstance();
-        PageFactory.initElements(driver, AbstractPage.class);
+        PageFactory.initElements(driver, this);
     }
 
-    public boolean isElementPresent(By locator) {
-        return !driver.findElements(locator).isEmpty();
+    public void waitUntilElementsIsVisible(List<WebElement> element){
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfAllElements(element));
     }
-
-    protected void waitForElementPresentByLocator(By locator) {
-        new WebDriverWait(driver, WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
-    }
-
-    protected void waitForElementPresentByWebElement(WebElement element) {
-        new WebDriverWait(driver, WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.visibilityOf(element));
-    }
-
-    protected void waitForElementVisible(By locator) {
-        new WebDriverWait(driver, WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
-    }
-
-    protected void waitForElementEnabled(By locator) {
-        new WebDriverWait(driver, WAIT_FOR_ELEMENT_TIMEOUT_SECONDS).until(ExpectedConditions.elementToBeClickable(locator));
-    }
-    protected void highlightElement(By locator) {
+    public void waitUntilElementIsVisible(WebElement element){
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(element));
+    }    protected void highlightElement(By locator) {
         WebElement element = driver.findElement(locator);
         ((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", element);
     }
